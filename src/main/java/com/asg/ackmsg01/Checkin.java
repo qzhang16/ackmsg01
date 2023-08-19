@@ -12,27 +12,35 @@ import javax.naming.NamingException;
 
 import org.apache.activemq.artemis.jms.client.ActiveMQConnectionFactory;
 
-/**
- * Hello world!
- *
- */
-public class AppProd {
+public class Checkin {
     public static void main(String[] args) {
-        System.out.println("Hello World!");
-
-        try {
+         try {
             InitialContext initContext = new InitialContext();
             Queue ackmsgQ = (Queue) initContext.lookup("queue/ackmsgQueue");
 
             try (ActiveMQConnectionFactory cf = new ActiveMQConnectionFactory("tcp://localhost:61616", "admin",
                     "admin");
-                    JMSContext jmsContext = cf.createContext()) {
+                    JMSContext jmsContext = cf.createContext(JMSContext.SESSION_TRANSACTED)) {
 
                 JMSProducer producer = jmsContext.createProducer();
                 Random rand01 = new Random(100);
                 TextMessage msg = jmsContext.createTextMessage("number " + rand01.nextInt(10));
                 producer.send(ackmsgQ, msg);
                 System.out.println("Sending : " + msg.getText());
+
+                msg = jmsContext.createTextMessage("number " + rand01.nextInt(10));
+                producer.send(ackmsgQ, msg);
+                System.out.println("Sending : " + msg.getText());
+
+                jmsContext.commit();
+
+                msg = jmsContext.createTextMessage("number " + rand01.nextInt(10));
+                producer.send(ackmsgQ, msg);
+                System.out.println("Sending : " + msg.getText());
+
+                jmsContext.rollback();
+
+
             } catch (JMSException e) {
                 e.printStackTrace();
             }
@@ -41,6 +49,6 @@ public class AppProd {
             e.printStackTrace();
 
         }
-
     }
+    
 }
