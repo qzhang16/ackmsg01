@@ -23,6 +23,7 @@ public class AppCons implements MessageListener {
             TextMessage msg = (TextMessage) message;
             
             System.out.println(msg.getText());
+            msg.acknowledge();
         } catch (JMSException e) {
             e.printStackTrace();
         } finally {
@@ -39,7 +40,7 @@ public class AppCons implements MessageListener {
 
             try (ActiveMQConnectionFactory cf = new ActiveMQConnectionFactory("tcp://localhost:61616", "admin",
                     "admin");
-                    JMSContext jmsContext = cf.createContext()) {
+                    JMSContext jmsContext = cf.createContext(JMSContext.CLIENT_ACKNOWLEDGE)) {
 
                 // JMSProducer producer = jmsContext.createProducer();
                 // Random rand01 = new Random(100);

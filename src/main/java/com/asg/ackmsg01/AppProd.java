@@ -26,7 +26,7 @@ public class AppProd {
 
             try (ActiveMQConnectionFactory cf = new ActiveMQConnectionFactory("tcp://localhost:61616", "admin",
                     "admin");
-                    JMSContext jmsContext = cf.createContext()) {
+                    JMSContext jmsContext = cf.createContext(JMSContext.AUTO_ACKNOWLEDGE)) {
 
                 JMSProducer producer = jmsContext.createProducer();
                 Random rand01 = new Random(100);
